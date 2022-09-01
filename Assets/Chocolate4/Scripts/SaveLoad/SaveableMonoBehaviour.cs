@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Chocolate4.SaveLoad
 {
-    public abstract class IPersistantObject : MonoBehaviour
+    public abstract class SaveableMonoBehaviour : MonoBehaviour
     {
         public virtual void Save(GameDataWriter writer)
         {

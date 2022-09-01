@@ -11,17 +11,20 @@ public class CameraMovementEditor : Editor
     private AnimBool canTwistAnim;
     private AnimBool canRotateAnim;
     private AnimBool canMoveByEdgeAnim;
-    private SerializedProperty canMoveByDragMap;
-    private SerializedProperty canZoom;
-    private SerializedProperty canTwistZoom;
-    private SerializedProperty canRotate;
-    private SerializedProperty canMoveByEdge;
-    private SerializedProperty mWheelDraggableLayer;
-    private SerializedProperty minZoom, maxZoom;
-    private SerializedProperty twistMinZoom, twistMaxZoom;
-    private SerializedProperty moveSpeedMinZoom, moveSpeedMaxZoom;
-    private SerializedProperty rotationSpeed;
-    private SerializedProperty screenEdgePan;
+    private AnimBool canLockCharacterAnim;
+    private SerializedProperty canMoveByDragMapProp;
+    private SerializedProperty canZoomProp;
+    private SerializedProperty canTwistZoomProp;
+    private SerializedProperty canRotateProp;
+    private SerializedProperty canMoveByEdgeProp;
+    private SerializedProperty canLockCharacterProp;
+    private SerializedProperty mWheelDraggableLayerProp;
+    private SerializedProperty minZoomProp, maxZoomProp;
+    private SerializedProperty twistMinZoomProp, twistMaxZoomProp;
+    private SerializedProperty moveSpeedMinZoomProp, moveSpeedMaxZoomProp;
+    private SerializedProperty rotationSpeedProp;
+    private SerializedProperty screenEdgePanProp;
+    private SerializedProperty lockedTransformProp;
     private CameraMovement cam;
     private Transform swivel, stick;
 
@@ -31,40 +34,45 @@ public class CameraMovementEditor : Editor
         swivel = cam.transform.GetChild(0);
         stick = swivel.GetChild(0);
 
-        canMoveByDragMap = 
+        canMoveByDragMapProp = 
             serializedObject.FindProperty("canMoveByDragMap");
-        canZoom = 
+        canZoomProp = 
             serializedObject.FindProperty("canZoom");
-        canTwistZoom = 
+        canTwistZoomProp = 
             serializedObject.FindProperty("canTwistZoom");
-        canRotate = 
+        canRotateProp = 
             serializedObject.FindProperty("canRotate");
-        canMoveByEdge = 
+        canMoveByEdgeProp = 
             serializedObject.FindProperty("canMoveByEdge");
-        mWheelDraggableLayer = 
+        mWheelDraggableLayerProp = 
             serializedObject.FindProperty("mouseWheelDraggable");
-        minZoom = 
+        minZoomProp = 
             serializedObject.FindProperty("minZoom");
-        maxZoom = 
+        maxZoomProp = 
             serializedObject.FindProperty("maxZoom");
-        twistMinZoom = 
+        twistMinZoomProp = 
             serializedObject.FindProperty("twistMinZoom");
-        twistMaxZoom = 
+        twistMaxZoomProp = 
             serializedObject.FindProperty("twistMaxZoom");
-        moveSpeedMinZoom = 
+        moveSpeedMinZoomProp = 
             serializedObject.FindProperty("moveSpeedMinZoom");
-        moveSpeedMaxZoom = 
+        moveSpeedMaxZoomProp = 
             serializedObject.FindProperty("moveSpeedMaxZoom");
-        rotationSpeed = 
+        rotationSpeedProp = 
             serializedObject.FindProperty("rotationSpeed");
-        screenEdgePan = 
+        screenEdgePanProp = 
             serializedObject.FindProperty("screenEdgePan");
+        canLockCharacterProp = 
+            serializedObject.FindProperty("canLockCharacter");
+        lockedTransformProp = 
+            serializedObject.FindProperty("lockedTransform");
 
-        draggableMapAnim = new AnimBool(canMoveByDragMap.boolValue);
-        canZoomAnim = new AnimBool(canZoom.boolValue);
-        canTwistAnim = new AnimBool(canTwistZoom.boolValue);
-        canRotateAnim = new AnimBool(canRotate.boolValue);
-        canMoveByEdgeAnim = new AnimBool(canMoveByEdge.boolValue);
+        draggableMapAnim = new AnimBool(canMoveByDragMapProp.boolValue);
+        canZoomAnim = new AnimBool(canZoomProp.boolValue);
+        canTwistAnim = new AnimBool(canTwistZoomProp.boolValue);
+        canRotateAnim = new AnimBool(canRotateProp.boolValue);
+        canMoveByEdgeAnim = new AnimBool(canMoveByEdgeProp.boolValue);
+        canLockCharacterAnim = new AnimBool(canLockCharacterProp.boolValue);
 
         draggableMapAnim.valueChanged.AddListener(Repaint);
         canZoomAnim.valueChanged.AddListener(Repaint);
@@ -81,29 +89,43 @@ public class CameraMovementEditor : Editor
         GUILayout.Label("CAMERA OPTIONS", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
+        canLockCharacterAnim.target = EditorGUILayout.ToggleLeft("Can lock character", canLockCharacterAnim.target);
+        canMoveByEdgeProp.boolValue = canLockCharacterAnim.target;
+
+        if (EditorGUILayout.BeginFadeGroup(canLockCharacterAnim.faded))
+        {
+            EditorGUI.indentLevel++;
+
+            EditorGUILayout.PropertyField(
+                lockedTransformProp, new GUIContent("Character to lock onto")
+            );
+            EditorGUI.indentLevel--;
+        }
+        EditorGUILayout.EndFadeGroup();
+
         canMoveByEdgeAnim.target = EditorGUILayout.ToggleLeft("Can move by edge", canMoveByEdgeAnim.target);
-        canMoveByEdge.boolValue = canMoveByEdgeAnim.target;
+        canMoveByEdgeProp.boolValue = canMoveByEdgeAnim.target;
 
         if (EditorGUILayout.BeginFadeGroup(canMoveByEdgeAnim.faded))
         {
             EditorGUI.indentLevel++;
 
             EditorGUILayout.PropertyField(
-                screenEdgePan, new GUIContent("Screen edge pan")
+                screenEdgePanProp, new GUIContent("Screen edge pan")
             );
             EditorGUI.indentLevel--;
         }
         EditorGUILayout.EndFadeGroup();
 
         draggableMapAnim.target = EditorGUILayout.ToggleLeft("Can drag map", draggableMapAnim.target);
-        canMoveByDragMap.boolValue = draggableMapAnim.target;
+        canMoveByDragMapProp.boolValue = draggableMapAnim.target;
 
         if (EditorGUILayout.BeginFadeGroup(draggableMapAnim.faded))
         {
             EditorGUI.indentLevel++;
 
             EditorGUILayout.PropertyField(
-                mWheelDraggableLayer, new GUIContent("Draggable Layer")
+                mWheelDraggableLayerProp, new GUIContent("Draggable Layer")
             );
 
             EditorGUI.indentLevel--;
@@ -111,14 +133,14 @@ public class CameraMovementEditor : Editor
         EditorGUILayout.EndFadeGroup();
 
         canRotateAnim.target = EditorGUILayout.ToggleLeft("Can rotate map", canRotateAnim.target);
-        canRotate.boolValue = canRotateAnim.target;
+        canRotateProp.boolValue = canRotateAnim.target;
 
         if (EditorGUILayout.BeginFadeGroup(canRotateAnim.faded))
         {
             EditorGUI.indentLevel++;
 
             EditorGUILayout.PropertyField(
-                rotationSpeed, new GUIContent("Rotation Speed")
+                rotationSpeedProp, new GUIContent("Rotation Speed")
             );
 
             EditorGUI.indentLevel--;
@@ -126,38 +148,38 @@ public class CameraMovementEditor : Editor
         EditorGUILayout.EndFadeGroup();
 
         canZoomAnim.target = EditorGUILayout.ToggleLeft("Can zoom in", canZoomAnim.target);
-        canZoom.boolValue = canZoomAnim.target;
+        canZoomProp.boolValue = canZoomAnim.target;
 
         if (EditorGUILayout.BeginFadeGroup(canZoomAnim.faded))
         {
             EditorGUI.indentLevel++;
 
             EditorGUILayout.PropertyField(
-                minZoom, new GUIContent("Min Zoom")
+                minZoomProp, new GUIContent("Min Zoom")
             );
             EditorGUILayout.PropertyField(
-                maxZoom, new GUIContent("Max Zoom")
+                maxZoomProp, new GUIContent("Max Zoom")
             );
 
             EditorGUILayout.PropertyField(
-                moveSpeedMinZoom, new GUIContent("Speed Farthest")
+                moveSpeedMinZoomProp, new GUIContent("Speed Farthest")
             );
             EditorGUILayout.PropertyField(
-                moveSpeedMaxZoom, new GUIContent("Speed Closest")
+                moveSpeedMaxZoomProp, new GUIContent("Speed Closest")
             );
 
             canTwistAnim.target = EditorGUILayout.ToggleLeft("Twist camera during zoom", canTwistAnim.target);
-            canTwistZoom.boolValue = canTwistAnim.target;
+            canTwistZoomProp.boolValue = canTwistAnim.target;
 
             if (EditorGUILayout.BeginFadeGroup(canTwistAnim.faded))
             {
                 EditorGUI.indentLevel++;
 
                 EditorGUILayout.PropertyField(
-                    twistMinZoom, new GUIContent("Twist Min Zoom")
+                    twistMinZoomProp, new GUIContent("Twist Min Zoom")
                 );
                 EditorGUILayout.PropertyField(
-                    twistMaxZoom, new GUIContent("Twist Max Zoom")
+                    twistMaxZoomProp, new GUIContent("Twist Max Zoom")
                 );
 
                 EditorGUI.indentLevel--;
@@ -173,13 +195,13 @@ public class CameraMovementEditor : Editor
 
     private void OnSceneGUI()
     {
-        if (canZoom.boolValue)
+        if (canZoomProp.boolValue)
         {
             Quaternion stickRot = stick.localRotation;
             Vector3 pos = cam.transform.position;
 
-            Vector3 stickStart = stick.forward * minZoom.floatValue;
-            Vector3 stickEnd = stick.forward * maxZoom.floatValue;
+            Vector3 stickStart = stick.forward * minZoomProp.floatValue;
+            Vector3 stickEnd = stick.forward * maxZoomProp.floatValue;
 
             Handles.color = Color.magenta;
 

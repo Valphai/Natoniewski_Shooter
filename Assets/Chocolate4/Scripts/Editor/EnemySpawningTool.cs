@@ -1,15 +1,18 @@
 using UnityEngine;
 using UnityEditor;
+using Chocolate4.PersistantThroughLevels;
+using Chocolate4.Entities;
 
 public class EnemySpawningTool : EditorWindow
 {
     private SerializedObject so;
-    public GameObject SpawnPrefab;
+    public EntityManager EntityManager;
     [Tooltip("Offset for y component of the world position, will not spawn above this value")]
     public float SpawnOffset;
+    private Entity spawnPrefab;
     private Mesh mesh;
     private Material[] materials;
-    private SerializedProperty spawnPrefabProp;
+    private SerializedProperty entityManagerProp;
     private SerializedProperty spawnOffsetProp;
 
     [MenuItem("Tools/EnemySpawningTool")]
@@ -23,24 +26,33 @@ public class EnemySpawningTool : EditorWindow
     {
         so = new SerializedObject(this);
         
-        spawnPrefabProp = so.FindProperty("SpawnPrefab");
+        entityManagerProp = so.FindProperty("EntityManager");
         spawnOffsetProp = so.FindProperty("SpawnOffset");
+
+        SpawnOffset = EditorPrefs.GetFloat("ENEMY_SPAWNING_TOOL_SpawnOffset", .15f);
 
         SceneView.duringSceneGui += DuringSceneGUI;
     }
     private void OnDisable()
     {
+        EditorPrefs.SetFloat("ENEMY_SPAWNING_TOOL_SpawnOffset", SpawnOffset);
+
         SceneView.duringSceneGui -= DuringSceneGUI;
     }
     private void OnGUI()
     {
         so.Update();
-        EditorGUILayout.PropertyField(spawnPrefabProp);
+        EditorGUILayout.PropertyField(entityManagerProp);
         EditorGUILayout.PropertyField(spawnOffsetProp);
-        if (SpawnPrefab != null)
+        
+        if (EntityManager != null)
         {
-            mesh = SpawnPrefab.GetComponentInChildren<SkinnedMeshRenderer>().sharedMesh;
-            materials = SpawnPrefab.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterials;
+            spawnPrefab = null ?? EntityManager.EnemyPrefab;
+            if (spawnPrefab != null)
+            {
+                mesh = spawnPrefab.GetComponentInChildren<SkinnedMeshRenderer>().sharedMesh;
+                materials = spawnPrefab.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterials;
+            }
         }
 
         so.ApplyModifiedProperties();
@@ -57,10 +69,9 @@ public class EnemySpawningTool : EditorWindow
         if (Physics.Raycast(r, out RaycastHit hitInfo))
         {
             point = hitInfo.point.y > SpawnOffset ? null : hitInfo.point;
-            
         }
         if (point == null) return;
-        if (SpawnPrefab == null) return;
+        if (spawnPrefab == null) return;
 
         if (Event.current.control)
         {
@@ -74,7 +85,7 @@ public class EnemySpawningTool : EditorWindow
     }
     private void InstantiateGOAt(Vector3? point)
     {
-        GameObject instance = PrefabUtility.InstantiatePrefab(SpawnPrefab) as GameObject;
+        GameObject instance = EntityManager.SpawnEnemy().gameObject;// PrefabUtility.InstantiatePrefab(spawnPrefab) as GameObject;
         instance.transform.position = (Vector3)point;
         Undo.RegisterCreatedObjectUndo(instance, $"Spawned {instance}");
     }
@@ -83,6 +94,7 @@ public class EnemySpawningTool : EditorWindow
         Vector3 p = (Vector3)point;
         foreach (Material m in materials)
         {
+            // Forward pass. Shades all light in a single pass.
             m.SetPass(0);
         }
         Graphics.DrawMeshNow(mesh, p, Quaternion.identity);

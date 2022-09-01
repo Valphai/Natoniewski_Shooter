@@ -12,7 +12,7 @@ namespace Chocolate4.SaveLoad
             savePath = Path.Combine(Application.persistentDataPath, "SaveFile");
         }
         public bool FileExists() => File.Exists(savePath);
-        public void Save(IPersistantObject game, int saveVersion)
+        public void Save(SaveableMonoBehaviour game, int saveVersion)
         {
             using (
                 var writer = new BinaryWriter(File.Open(savePath, FileMode.Create))
@@ -22,7 +22,7 @@ namespace Chocolate4.SaveLoad
                 game.Save(new GameDataWriter(writer));
             }
         }
-        public void Load(IPersistantObject game)
+        public void Load(SaveableMonoBehaviour game)
         {
             if (!FileExists()) return;
             using (

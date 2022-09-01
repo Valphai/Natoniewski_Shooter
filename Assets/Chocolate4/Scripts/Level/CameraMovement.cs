@@ -15,28 +15,29 @@ namespace Chocolate4.Level
         private bool canTwistZoom = false;
         [HideInInspector, SerializeField] 
         private LayerMask mouseWheelDraggable;
-        [HideInInspector, SerializeField]
+        [HideInInspector, SerializeField] 
         private float minZoom = -25f, maxZoom = -5f;
-        [HideInInspector, SerializeField]
+        [HideInInspector, SerializeField] 
         private float twistMinZoom = 50f, twistMaxZoom = 40f;
-        [HideInInspector, SerializeField]
+        [HideInInspector, SerializeField] 
         private float moveSpeedMinZoom = 25f, moveSpeedMaxZoom = 15f;
-        [HideInInspector, SerializeField]
+        [HideInInspector, SerializeField] 
         private float rotationSpeed = 50f;
-        [SerializeField, HideInInspector] 
+        [HideInInspector, SerializeField] 
         private float screenEdgePan = 25f;
-        [SerializeField, HideInInspector] 
+        [HideInInspector, SerializeField] 
         private bool canMoveByEdge;
-        [SerializeField, Tooltip("Can you lock the camera view on a character?")]
+        [HideInInspector, SerializeField] 
+        private Transform lockedTransform;
+        [HideInInspector, SerializeField, Tooltip("Can you lock the camera view on a character?")]
         private bool canLockCharacter;
         [SerializeField, Tooltip("Can you move the camera?")]
         private bool canMoveCamera;
         private float zoom = .6f;
-        private Transform lockedTransform;
         private Transform swivel, stick;
         private Camera cam;
         private float rotationAngle;
-        private const float yRot = 50f;
+        public const float _YRot = 50f;
         private Vector3 dragStartPos;
         private Vector3 dragCurrentPos;
         [SerializeField] private InputSettings input;
@@ -122,7 +123,6 @@ namespace Chocolate4.Level
                 }
             }
         }
-        private void LockTransform(Transform tra) => lockedTransform = tra;
         private void LockPositionOn()
         {
             if (lockedTransform != null)
@@ -141,7 +141,7 @@ namespace Chocolate4.Level
             if (canTwistZoom)
             {
                 float angle = Mathf.Lerp(twistMinZoom, twistMaxZoom, zoom);
-                swivel.localRotation = Quaternion.Euler(angle, yRot, 0f);
+                swivel.localRotation = Quaternion.Euler(angle, _YRot, 0f);
             }
         }
 
@@ -163,7 +163,7 @@ namespace Chocolate4.Level
         {
             lockedTransform = null;
 
-            Quaternion angle = Quaternion.AngleAxis(yRot, Vector3.up);
+            Quaternion angle = Quaternion.AngleAxis(_YRot, Vector3.up);
             Vector3 direction = 
                 transform.localRotation * angle * new Vector3(xDelta, 0f, zDelta).normalized;
             float damping = Mathf.Max(Mathf.Abs(xDelta), Mathf.Abs(zDelta));
