@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337f8054b9d0aa24ea6efc28159b59e2, type: 3}
   m_Name: PlayerEntitySettings
   m_EditorClassIdentifier: 
-  MoveSpeed: 100
+  MoveSpeed: 5
   IsAI: 0

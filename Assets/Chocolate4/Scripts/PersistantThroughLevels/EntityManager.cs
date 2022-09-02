@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Chocolate4.Entities;
+using Chocolate4.Helpers;
 using UnityEngine;
 
 namespace Chocolate4.PersistantThroughLevels
@@ -16,7 +17,7 @@ namespace Chocolate4.PersistantThroughLevels
         {
             entities = new List<Entity>();
             enemyFactory = 
-                new Factory<Entity>(EnemyPrefab, "FactoryScene");
+                new Factory<Entity>(EnemyPrefab);
         }
         private void LateUpdate()
         {
@@ -25,19 +26,12 @@ namespace Chocolate4.PersistantThroughLevels
                 entities[i].UpdateEntity();
             }
         }
-        private void FixedUpdate()
-        {
-            for (int i = 0; i < entities.Count; i++)
-            {
-                entities[i].FixedUpdateEntity();
-            }
-        }
         public Entity SpawnEnemy()
         {
             if (enemyFactory == null)
             {
                 enemyFactory = 
-                    new Factory<Entity>(EnemyPrefab, "FactoryScene");
+                    new Factory<Entity>(EnemyPrefab);
             }
 
             Entity instance = enemyFactory.Get();

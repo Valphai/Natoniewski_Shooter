@@ -1,21 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocolate4.Weapons
+namespace Chocolate4.Entities.Weapons
 {
-    public class Weapon : MonoBehaviour
+    public abstract class Weapon : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        public int Damage;
+        /// <summary>In seconds</summary>
+        private float attackCooldown;
+        /// <summary>In seconds</summary>
+        [SerializeField] private float cooldownTime = 5f;
+        [SerializeField] private ParticleSystem dmgParticles;
+        public virtual void Attack()
         {
-            
+            ResetCooldown();
         }
-    
-        // Update is called once per frame
-        void Update()
+        public bool IsOnCooldown()
         {
-            
+            if (attackCooldown <= 0)
+            {
+                return false;
+            }
+            attackCooldown -= 1;
+            return true;
         }
+        private void ResetCooldown() => attackCooldown = cooldownTime;
     }
 }

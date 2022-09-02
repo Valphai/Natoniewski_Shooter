@@ -6,6 +6,5 @@ namespace Chocolate4.Entities
     public class EntitySettings : ScriptableObject
     {
         public float MoveSpeed;
-        public bool IsAI;
     }
 }

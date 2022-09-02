@@ -2,20 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocolate4.Weapons
+namespace Chocolate4.Entities.Weapons
 {
     public class Claws : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
-    
-        // Update is called once per frame
-        void Update()
-        {
-            
-        }
+        
     }
 }

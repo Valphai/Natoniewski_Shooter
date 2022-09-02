@@ -1,3 +1,16 @@
 {
-	"name": "Chocolate4.Level"
+    "name": "Chocolate4.Level",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5e2897ebeca92174b970ee55a400419e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

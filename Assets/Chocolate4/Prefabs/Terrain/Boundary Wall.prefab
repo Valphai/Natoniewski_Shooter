@@ -256,6 +256,8 @@ GameObject:
   - component: {fileID: 1907467264084260044}
   - component: {fileID: 2930290738848968579}
   - component: {fileID: 5602386305056332002}
+  - component: {fileID: 8943765797741988035}
+  - component: {fileID: 6662426881129682450}
   m_Layer: 0
   m_Name: Boundary Wall
   m_TagString: Untagged
@@ -981,3 +983,28 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!65 &8943765797741988035
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883337532010974762}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5040169, y: 82.34563, z: 99.521286}
+  m_Center: {x: -0.25200844, y: 41.172813, z: -50.239357}
+--- !u!114 &6662426881129682450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883337532010974762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ccbe87d9cabfe46b4646bf480ad250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

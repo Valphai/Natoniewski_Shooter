@@ -5,6 +5,7 @@ namespace Chocolate4.Level
     [System.Serializable]
     public class CameraMovement : MonoBehaviour
     {
+        public static CameraMovement Instance { get; private set; }
         [HideInInspector, SerializeField] 
         private bool canRotate = false;
         [HideInInspector, SerializeField] 
@@ -37,7 +38,7 @@ namespace Chocolate4.Level
         private Transform swivel, stick;
         private Camera cam;
         private float rotationAngle;
-        public const float _YRot = 50f;
+        private const float _yRot = 50f;
         private Vector3 dragStartPos;
         private Vector3 dragCurrentPos;
         [SerializeField] private InputSettings input;
@@ -47,12 +48,15 @@ namespace Chocolate4.Level
             cam = cam ?? Camera.main;
             swivel = transform.GetChild(0);
             stick = swivel.GetChild(0);
-            
-            // CharacterSelections.OnLockTransform += LockTransform;
         }
-        private void OnDisable()
+        private void Awake()
         {
-            // CharacterSelections.OnLockTransform -= LockTransform;
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+            Instance = this;
         }
         private void Update()
         {
@@ -97,7 +101,8 @@ namespace Chocolate4.Level
                 LockPositionOn();
             }
         }
-
+        public Quaternion CurrentRotation() => 
+            Quaternion.Euler(0f, _yRot, 0f) * transform.localRotation;
         private void AdjustPositionMouseWheel()
         {
             if (Input.GetKeyDown(input.WorldDrag))
@@ -141,7 +146,7 @@ namespace Chocolate4.Level
             if (canTwistZoom)
             {
                 float angle = Mathf.Lerp(twistMinZoom, twistMaxZoom, zoom);
-                swivel.localRotation = Quaternion.Euler(angle, _YRot, 0f);
+                swivel.localRotation = Quaternion.Euler(angle, _yRot, 0f);
             }
         }
 
@@ -163,7 +168,7 @@ namespace Chocolate4.Level
         {
             lockedTransform = null;
 
-            Quaternion angle = Quaternion.AngleAxis(_YRot, Vector3.up);
+            Quaternion angle = Quaternion.AngleAxis(_yRot, Vector3.up);
             Vector3 direction = 
                 transform.localRotation * angle * new Vector3(xDelta, 0f, zDelta).normalized;
             float damping = Mathf.Max(Mathf.Abs(xDelta), Mathf.Abs(zDelta));

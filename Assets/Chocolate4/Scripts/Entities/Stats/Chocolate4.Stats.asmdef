@@ -1,10 +1,7 @@
 {
-    "name": "Chocolate4.AttackInput",
+    "name": "Chocolate4.Stats",
     "rootNamespace": "",
-    "references": [
-        "GUID:03f9a78ae0a99f244b7cd2afec9f6e34",
-        "GUID:5e2897ebeca92174b970ee55a400419e"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

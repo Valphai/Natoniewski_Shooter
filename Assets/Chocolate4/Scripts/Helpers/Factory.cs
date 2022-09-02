@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 #endif
 
-namespace Chocolate4.PersistantThroughLevels
+namespace Chocolate4.Helpers
 {
     public class Factory<T> where T : MonoBehaviour
     {
@@ -13,11 +13,13 @@ namespace Chocolate4.PersistantThroughLevels
         private Scene factoryScene;
         private readonly string sceneName;
         private readonly T prefab;
+        private readonly int maxSize;
 
-        public Factory(T prefab, string sceneName)
+        public Factory(T prefab, int maxSize = 100, string sceneName = "FactoryScene")
         {
             this.prefab = prefab;
             this.sceneName = sceneName;
+            this.maxSize = maxSize;
         }
         public T Get()
         {
@@ -45,7 +47,8 @@ namespace Chocolate4.PersistantThroughLevels
                 b => b.gameObject.SetActive(true), // onTake
                 b => b.gameObject.SetActive(false), // onReturn
                 b => MonoBehaviour.Destroy(b.gameObject), // onDestroy
-                collectionCheck : true // can not release released
+                collectionCheck : true, // can not release released
+                10, maxSize
             );
         }
         private T OnCreateItem()

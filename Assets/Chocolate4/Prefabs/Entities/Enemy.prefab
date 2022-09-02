@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 6037865807480527468}
   - component: {fileID: 5378128183715108903}
   - component: {fileID: 112635078868399037}
+  - component: {fileID: 8588364613268415682}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69,9 +70,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Settings: {fileID: 11400000, guid: d9d1c86582b64ab49b8af16a21bae9f0, type: 2}
-  MoveSpeed: 0
   Hp: {fileID: 0}
-  animController: {fileID: 0}
+--- !u!54 &8588364613268415682
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6037865807480527469}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &6037865807424207929
 PrefabInstance:
   m_ObjectHideFlags: 0

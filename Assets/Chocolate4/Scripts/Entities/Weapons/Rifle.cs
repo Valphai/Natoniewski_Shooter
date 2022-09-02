@@ -1,21 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Chocolate4.Helpers;
 
-namespace Chocolate4.Weapons
+namespace Chocolate4.Entities.Weapons
 {
-    public class Rifle : MonoBehaviour
+    public class Rifle : Weapon
     {
-        // Start is called before the first frame update
-        void Start()
+        private Factory<Bullet> bulletFactory;
+        [SerializeField] private Bullet bulletPrefab;
+        [SerializeField] private float bulletSpeed;
+        [SerializeField] private Transform spawnPoint;
+
+        private void Awake()
         {
-            
+            bulletFactory = new Factory<Bullet>(bulletPrefab);
         }
-    
-        // Update is called once per frame
-        void Update()
+        public override void Attack()
         {
-            
+            base.Attack();
+            Bullet b = bulletFactory.Get();
+            b.Initialize(
+                spawnPoint, bulletSpeed, Damage, this
+            );
         }
+        public void ReturnToFactory(Bullet b) => bulletFactory.Return(b);
     }
 }

@@ -7,5 +7,6 @@ namespace Chocolate4.Level
     {
         [Tooltip("Use this key to drag the world")]
         public KeyCode WorldDrag = KeyCode.Mouse2;
+        public KeyCode ShootKey = KeyCode.Mouse0;
     }
 }

@@ -1,11 +1,10 @@
 using UnityEngine;
 
-namespace Chocolate4.MoveInput
+namespace Chocolate4.Entities.MoveInput
 {
     public class AIMoveInput : IMoveInput
     {
         public Vector3 Translation { get; set; }
-        public Vector3? Rotation { get; set; }
 
         public void ReadMoveInput(float moveSpeed)
         {

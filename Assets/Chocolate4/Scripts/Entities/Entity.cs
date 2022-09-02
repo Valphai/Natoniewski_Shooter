@@ -1,27 +1,28 @@
-using Chocolate4.AttackInput;
-using Chocolate4.Level;
-using Chocolate4.MoveInput;
+using Chocolate4.Entities.AttackInput;
+using Chocolate4.Entities.MoveInput;
 using Chocolate4.SaveLoad;
+using Chocolate4.Entities.Weapons;
+using Chocolate4.Entities.Stats;
 using UnityEngine;
+using System;
 
 namespace Chocolate4.Entities
 {
-    [RequireComponent(typeof(Rigidbody))]
-    public class Entity : SaveableMonoBehaviour
+    [RequireComponent(typeof(Rigidbody), typeof(Hp))]
+    public abstract class Entity : SaveableMonoBehaviour
     {
         public EntitySettings Settings;
         [HideInInspector] public Hp Hp;
-        [SerializeField, HideInInspector] 
-        private IAttackInput attackInput;
-        [SerializeField, HideInInspector] 
-        private IMoveInput moveInput;
+        [HideInInspector] public IAttackInput AttackInput;
+        [HideInInspector] public IMoveInput MoveInput;
         [SerializeField, HideInInspector] 
         private AnimationController animController;
         private Animator anim;
-        private Rigidbody rb;
+        [SerializeField] protected Weapon defaultWeapon;
+        protected Rigidbody rb;
         protected MaterialPropertyBlock mpb;
-        protected int colorID = Shader.PropertyToID("_Color");
-        protected MeshRenderer mr;
+        protected readonly int colorID = Shader.PropertyToID("_BaseColor");
+        protected SkinnedMeshRenderer mr;
         private float _moveSpeed;
         public float MoveSpeed
         {
@@ -33,44 +34,38 @@ namespace Chocolate4.Entities
             }
             set { _moveSpeed = value; }
         }
+        public static event Action<Entity> OnKilled;
 
-        public virtual void Awake()
+        private void OnValidate()
         {
             anim = GetComponentInChildren<Animator>();
+            mr = GetComponentInChildren<SkinnedMeshRenderer>();
             rb = GetComponent<Rigidbody>();
+            Hp = GetComponent<Hp>();
+            SetBoxesColor();
         }
+        private void OnEnable() => Hp.OnKill += Kill;
+        private void OnDisable() => Hp.OnKill -= Kill;
         public virtual void Initialize()
         {
-            attackInput = Settings.IsAI ? 
-                new AIAttackInput() : new PlayerAttackInput();
-            
-            moveInput = Settings.IsAI ? 
-                new AIMoveInput() : new PlayerMoveInput(Camera.main);
-
             animController = new AnimationController();
-
-            // randomize material color for fun!
-            mpb.SetColor(
-                colorID, Random.ColorHSV(0f, 1f, .1f, .4f, 0f, 1f)
+        }
+        public virtual void UpdateEntity()
+        {
+            animController.UpdateAnimation(
+                anim, rb.velocity, MoveSpeed
             );
-            mr.SetPropertyBlock(mpb);
+            MoveInput.ReadMoveInput(MoveSpeed);
+            AttackInput.ReadAttackInput();
         }
-        public void UpdateEntity()
+        public virtual void SetBoxesColor()
         {
-            // animController.UpdateAnimation(anim, rb.velocity);
-            moveInput.ReadMoveInput(MoveSpeed);
-
-            Vector3? rotation = moveInput.Rotation;
-            if (rotation != null)
-            {
-                transform.LookAt((Vector3)rotation, Vector3.up);
-            }
+            mpb = new MaterialPropertyBlock();
+            mpb.SetColor(
+                colorID, UnityEngine.Random.ColorHSV(0f, 1f, .1f, .4f, 0f, 1f)
+            );
+            mr.SetPropertyBlock(mpb, 0);
         }
-        public void FixedUpdateEntity()
-        {
-            Quaternion angle = Quaternion.AngleAxis(CameraMovement._YRot, Vector3.up);
-            Vector3 direction = transform.position + angle * moveInput.Translation;
-            rb.MovePosition(direction);
-        }
+        private void Kill() => OnKilled?.Invoke(this);
     }
 }
