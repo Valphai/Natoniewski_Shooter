@@ -7,17 +7,24 @@ namespace Chocolate4.PersistantThroughLevels
 {
     public class EntityManager : MonoBehaviour
     {
-        public Entity EnemyPrefab;
-        private List<Entity> entities;
-        private Factory<Entity> enemyFactory;
+        public Enemy EnemyPrefab;
+        [SerializeField] private List<Entity> entities;
+        [SerializeField] private Factory<Entity> enemyFactory;
 
-        private void OnEnable() => Player.OnPlayerJoin += AddEntity;
-        private void OnDisable() => Player.OnPlayerJoin -= AddEntity;
-        private void Awake()
+        private void OnValidate()
         {
-            entities = new List<Entity>();
-            enemyFactory = 
-                new Factory<Entity>(EnemyPrefab);
+            if (entities == null)
+                entities = new List<Entity>();
+        }
+        private void OnEnable()
+        {
+            Entity.OnKilled += ReturnEntity;
+            Player.OnPlayerJoin += RegisterPlayer;
+        }
+        private void OnDisable()
+        {
+            Entity.OnKilled -= ReturnEntity;
+            Player.OnPlayerJoin -= RegisterPlayer;
         }
         private void LateUpdate()
         {
@@ -28,25 +35,44 @@ namespace Chocolate4.PersistantThroughLevels
         }
         public Entity SpawnEnemy()
         {
+            enemyFactory=null;
             if (enemyFactory == null)
             {
                 enemyFactory = 
-                    new Factory<Entity>(EnemyPrefab);
+                    new Factory<Entity>(EnemyPrefab, sceneName:"PersistantScene");
             }
 
             Entity instance = enemyFactory.Get();
             entities.Add(instance);
-            instance.Initialize();
             return instance;
         }
-        public void ReturnEnemy(Entity enemy)
+        public void ReturnEntity(Entity entity)
         {
-            if (entities.Contains(enemy))
+            if (enemyFactory == null)
             {
-                entities.Remove(enemy);
-                enemyFactory.Return(enemy);
+                enemyFactory = 
+                    new Factory<Entity>(EnemyPrefab, sceneName:"PersistantScene");
+            }
+
+            if (entities.Contains(entity))
+            {
+                entities.Remove(entity);
+                entities.TrimExcess();
+                if (entity is Enemy)
+                {
+                    enemyFactory.Return(entity);
+                }
             }
         }
-        private void AddEntity(Entity entity) => entities.Add(entity);
+        private void RegisterPlayer(Entity player)
+        {
+            foreach (Entity e in entities)
+            {
+                Enemy enemy = e as Enemy;
+                enemy.Player = (Player)player;
+                enemy.Initialize();
+            }
+            entities.Add(player);
+        }
     }
 }

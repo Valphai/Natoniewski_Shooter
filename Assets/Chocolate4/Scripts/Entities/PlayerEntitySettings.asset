@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PlayerEntitySettings
   m_EditorClassIdentifier: 
   MoveSpeed: 5
-  IsAI: 0
+  MaxHp: 100

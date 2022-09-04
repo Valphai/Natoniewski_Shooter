@@ -8,21 +8,19 @@ using System;
 
 namespace Chocolate4.Entities
 {
-    [RequireComponent(typeof(Rigidbody), typeof(Hp))]
+    [RequireComponent(typeof(Hp))]
     public abstract class Entity : SaveableMonoBehaviour
     {
         public EntitySettings Settings;
         [HideInInspector] public Hp Hp;
         [HideInInspector] public IAttackInput AttackInput;
         [HideInInspector] public IMoveInput MoveInput;
-        [SerializeField, HideInInspector] 
-        private AnimationController animController;
-        private Animator anim;
-        [SerializeField] protected Weapon defaultWeapon;
-        protected Rigidbody rb;
+        protected AnimationController animController;
+        protected Animator anim;
         protected MaterialPropertyBlock mpb;
-        protected readonly int colorID = Shader.PropertyToID("_BaseColor");
         protected SkinnedMeshRenderer mr;
+        protected readonly int colorID = Shader.PropertyToID("_BaseColor");
+        [SerializeField] protected Weapon defaultWeapon;
         private float _moveSpeed;
         public float MoveSpeed
         {
@@ -36,27 +34,30 @@ namespace Chocolate4.Entities
         }
         public static event Action<Entity> OnKilled;
 
-        private void OnValidate()
+        protected abstract void ApplyMovement();
+        public virtual void OnValidate()
         {
             anim = GetComponentInChildren<Animator>();
             mr = GetComponentInChildren<SkinnedMeshRenderer>();
-            rb = GetComponent<Rigidbody>();
             Hp = GetComponent<Hp>();
-            SetBoxesColor();
+            
+            if (!mr.HasPropertyBlock())
+            {
+                SetBoxesColor();
+            }
         }
-        private void OnEnable() => Hp.OnKill += Kill;
-        private void OnDisable() => Hp.OnKill -= Kill;
+        public virtual void OnEnable() => Hp.OnKill += Kill;
+        public virtual void OnDisable() => Hp.OnKill -= Kill;
         public virtual void Initialize()
         {
-            animController = new AnimationController();
+            Hp.Initialize(Settings.MaxHp);
         }
         public virtual void UpdateEntity()
         {
-            animController.UpdateAnimation(
-                anim, rb.velocity, MoveSpeed
-            );
             MoveInput.ReadMoveInput(MoveSpeed);
             AttackInput.ReadAttackInput();
+
+            ApplyMovement();
         }
         public virtual void SetBoxesColor()
         {
@@ -66,6 +67,13 @@ namespace Chocolate4.Entities
             );
             mr.SetPropertyBlock(mpb, 0);
         }
-        private void Kill() => OnKilled?.Invoke(this);
+        protected virtual void Kill()
+        {
+            OnKilled?.Invoke(this);
+        }
+        private void OnDestroy()
+        {
+            Kill();
+        }
     }
 }

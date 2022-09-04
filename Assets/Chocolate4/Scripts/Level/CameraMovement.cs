@@ -132,7 +132,7 @@ namespace Chocolate4.Level
         {
             if (lockedTransform != null)
             {
-                Vector3 position = lockedTransform.transform.localPosition;
+                Vector3 position = lockedTransform.transform.position;
                 transform.localPosition = position;
             }
         }

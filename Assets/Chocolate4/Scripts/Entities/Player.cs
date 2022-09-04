@@ -9,10 +9,12 @@ namespace Chocolate4.Entities
     public class Player : Entity
     {
         [SerializeField] private InputSettings input;
+        private Rigidbody rb;
         public static event Action<Entity> OnPlayerJoin;
 
-        public void Awake()
+        private void Awake()
         {
+            rb = GetComponent<Rigidbody>();
             Initialize();
         }
         private void Start()
@@ -23,12 +25,15 @@ namespace Chocolate4.Entities
         {
             base.Initialize();
             AttackInput = AttackInput ?? new PlayerAttackInput(input, defaultWeapon);
-            MoveInput = MoveInput ?? new PlayerMoveInput(Camera.main);
+            MoveInput = MoveInput ?? new PlayerMoveInput();
+            animController = new AnimationController(anim, AttackInput);
         }
         public override void UpdateEntity()
         {
             base.UpdateEntity();
-            SetMovement();
+            animController.UpdateAnimation(
+                rb.velocity, MoveSpeed
+            );
         }
         public override void SetBoxesColor()
         {
@@ -39,7 +44,7 @@ namespace Chocolate4.Entities
             );
             mr.SetPropertyBlock(mpb, 0);
         }
-        private void SetMovement()
+        protected override void ApplyMovement()
         {
             // offset input angle by camera rotation
             Quaternion angle = CameraMovement.Instance.CurrentRotation();

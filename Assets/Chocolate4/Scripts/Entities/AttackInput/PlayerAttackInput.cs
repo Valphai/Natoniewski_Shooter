@@ -1,6 +1,7 @@
 using Chocolate4.Level;
 using Chocolate4.Entities.Weapons;
 using UnityEngine;
+using System;
 
 namespace Chocolate4.Entities.AttackInput
 {
@@ -8,6 +9,7 @@ namespace Chocolate4.Entities.AttackInput
     {
         public Weapon Weapon { get; set; }
         private InputSettings input;
+        public event Action OnAttack;
 
         public PlayerAttackInput(InputSettings input, Weapon weapon)
         {
@@ -21,6 +23,7 @@ namespace Chocolate4.Entities.AttackInput
                 if (Input.GetKey(input.ShootKey))
                 {
                     Weapon.Attack();
+                    OnAttack?.Invoke();
                 }
             }
         }

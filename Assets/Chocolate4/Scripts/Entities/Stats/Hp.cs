@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace Chocolate4.Entities.Stats
 {
+    [System.Serializable]
     public class Hp : MonoBehaviour
     {
-        private int max;
         private int current;
         public event Action OnKill;
 
+        public void Initialize(int max) => current = max;
         public void Damage(int damage)
         {
             current -= damage;

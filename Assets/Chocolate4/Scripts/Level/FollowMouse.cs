@@ -5,6 +5,7 @@ namespace Chocolate4.Level
     public class FollowMouse : MonoBehaviour
     {
         private Camera cam;
+        [SerializeField] private LayerMask groundLayer;
     
         private void Awake()
         {
@@ -14,12 +15,9 @@ namespace Chocolate4.Level
         {
             Ray r = cam.ScreenPointToRay(Input.mousePosition);
     
-            if (Physics.Raycast(r, out RaycastHit hitInfo))
+            if (Physics.Raycast(r, out RaycastHit hitInfo, Mathf.Infinity, groundLayer))
             {
-                Vector3 p = new Vector3(
-                    hitInfo.point.x, 1f, hitInfo.point.z
-                );
-                transform.position = p;
+                transform.position = hitInfo.point;
             }
         }
     }

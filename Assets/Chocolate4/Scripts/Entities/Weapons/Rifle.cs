@@ -14,14 +14,14 @@ namespace Chocolate4.Entities.Weapons
         {
             bulletFactory = new Factory<Bullet>(bulletPrefab);
         }
-        public override void Attack()
+        public void ReturnToFactory(Bullet b) => bulletFactory.Return(b);
+        protected override void AttackLogic()
         {
-            base.Attack();
             Bullet b = bulletFactory.Get();
             b.Initialize(
-                spawnPoint, bulletSpeed, Damage, this
+                spawnPoint, bulletSpeed, 
+                Damage, this, dmgParticles
             );
         }
-        public void ReturnToFactory(Bullet b) => bulletFactory.Return(b);
     }
 }
