@@ -1,0 +1,17 @@
+{
+    "name": "Chocolate4.MainMenu",
+    "rootNamespace": "",
+    "references": [
+        "GUID:fc147bb9ca1a61247b612025016ed4b4",
+        "GUID:01d0388a4df20a44c8a8297836006057"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

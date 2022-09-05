@@ -1,3 +1,4 @@
+using System;
 using Chocolate4.Entities.AttackInput;
 using Chocolate4.Entities.MoveInput;
 using UnityEngine;
@@ -12,13 +13,14 @@ namespace Chocolate4.Entities
         public Player Player;
         private NavMeshAgent agent;
         
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             agent = GetComponent<NavMeshAgent>();
         }
         public override void Initialize()
         {
-            base.Initialize();
+            ResetEntity();
             AttackInput = AttackInput ?? new AIAttackInput(
                                         Player.transform, transform,
                                         defaultWeapon
@@ -27,7 +29,7 @@ namespace Chocolate4.Entities
                                         Player.transform, 
                                         transform, ChaseRange
                                     );
-            animController = new AnimationController(anim, AttackInput);
+            base.Initialize();
         }
         public override void UpdateEntity()
         {
@@ -45,6 +47,12 @@ namespace Chocolate4.Entities
             base.Kill();
             agent.enabled = false;
         } 
+        private void ResetEntity()
+        {
+            agent.enabled = true;
+            AttackInput = null;
+            MoveInput = null;
+        }
         #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {

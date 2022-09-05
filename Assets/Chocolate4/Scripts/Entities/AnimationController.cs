@@ -15,10 +15,15 @@ namespace Chocolate4.Entities
         {
             this.anim = anim;
             this.attackInput = attackInput;
+            Enable();
         }
-        private void OnEnable() => attackInput.OnAttack += TriggerAttack;
-        private void OnDisable() => attackInput.OnAttack -= TriggerAttack;
-        private void TriggerAttack() => anim.SetTrigger("attack");
+        private void Enable() => attackInput.OnAttack += TriggerAttack;
+        public void Disable() => attackInput.OnAttack -= TriggerAttack;
+        public void DanceNow()
+        {
+            anim.SetLayerWeight(1, 0f);
+            anim.SetBool("game won", true);
+        }
         public void UpdateAnimation(
             Vector3 velocity, float maxSpeed
         )
@@ -29,5 +34,6 @@ namespace Chocolate4.Entities
                 anim.SetFloat("speed", velocityNormalized); 
             }
         }
+        private void TriggerAttack() => anim.SetTrigger("attack");
     }
 }

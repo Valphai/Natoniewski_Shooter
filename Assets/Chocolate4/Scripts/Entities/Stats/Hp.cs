@@ -4,15 +4,21 @@ using UnityEngine;
 namespace Chocolate4.Entities.Stats
 {
     [System.Serializable]
-    public class Hp : MonoBehaviour
+    public abstract class Hp : MonoBehaviour
     {
-        private int current;
+        protected int current;
+        protected int max;
         public event Action OnKill;
 
-        public void Initialize(int max) => current = max;
-        public void Damage(int damage)
+        public virtual void Initialize(int max)
+        {
+            current = max;
+            this.max = max;
+        }
+        public virtual void Damage(int damage)
         {
             current -= damage;
+
             if (current < 0)
             {
                 current = 0;

@@ -27,10 +27,10 @@ namespace Chocolate4.Entities.Weapons
         }
         private void OnTriggerEnter(Collider other)
         {
-            Hp targetHp = other.gameObject.GetComponent<Hp>();
-            if (targetHp != null && other.gameObject.tag == "Player")
+            PlayerHp playerHp = other.gameObject.GetComponent<PlayerHp>();
+            if (playerHp != null)
             {
-                targetHp.Damage(Damage);
+                playerHp.Damage(Damage);
             }
         }
     }

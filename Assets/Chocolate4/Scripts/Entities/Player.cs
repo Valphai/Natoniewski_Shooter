@@ -11,22 +11,23 @@ namespace Chocolate4.Entities
         [SerializeField] private InputSettings input;
         private Rigidbody rb;
         public static event Action<Entity> OnPlayerJoin;
+        public static event Action OnPlayerKilled;
 
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             rb = GetComponent<Rigidbody>();
-            Initialize();
         }
         private void Start()
         {
+            Initialize();
             OnPlayerJoin?.Invoke(this);
         }
         public override void Initialize()
         {
-            base.Initialize();
             AttackInput = AttackInput ?? new PlayerAttackInput(input, defaultWeapon);
             MoveInput = MoveInput ?? new PlayerMoveInput();
-            animController = new AnimationController(anim, AttackInput);
+            base.Initialize();
         }
         public override void UpdateEntity()
         {
@@ -44,6 +45,10 @@ namespace Chocolate4.Entities
             );
             mr.SetPropertyBlock(mpb, 0);
         }
+        public void GameWon()
+        {
+            animController.DanceNow();
+        }
         protected override void ApplyMovement()
         {
             // offset input angle by camera rotation
@@ -53,6 +58,11 @@ namespace Chocolate4.Entities
 
             transform.forward = direction == Vector3.zero ? 
                 transform.forward : direction;
+        }
+        protected override void Kill()
+        {
+            base.Kill();
+            OnPlayerKilled?.Invoke();
         }
     }
 }

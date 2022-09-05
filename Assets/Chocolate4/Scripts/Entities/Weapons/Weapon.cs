@@ -7,9 +7,9 @@ namespace Chocolate4.Entities.Weapons
     {
         public int Damage;
         /// <summary>In seconds</summary>
-        private float attackCooldown;
+        private float remainingTime;
         /// <summary>In seconds</summary>
-        [SerializeField] private float cooldownTime = 15f;
+        [SerializeField] private float cooldownDuration;
         [SerializeField] private float attackRange;
         [SerializeField] protected ParticleSystem dmgParticles;
         
@@ -21,15 +21,15 @@ namespace Chocolate4.Entities.Weapons
         }
         public bool IsOnCooldown()
         {
-            if (attackCooldown <= 0)
+            if (remainingTime <= 0)
             {
                 return false;
             }
-            attackCooldown -= 1;
+            remainingTime -= Time.deltaTime;
             return true;
         }
         /// <summary>AI specified attack range</summary>
         public virtual bool IsInRange(float distance) => distance <= attackRange;
-        private void ResetCooldown() => attackCooldown = cooldownTime;
+        private void ResetCooldown() => remainingTime = cooldownDuration;
     }
 }

@@ -1,8 +1,8 @@
-using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.Pool;
 #if UNITY_EDITOR
-using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 #endif
 
 namespace Chocolate4.Helpers
