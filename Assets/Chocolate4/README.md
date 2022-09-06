@@ -16,6 +16,8 @@ I applied some postprocessing to get the extra polished feel to the game.
 One more thing worth mentioning is that I've decided to use ragdolls in this prototype. To be completely honest this has been the first time I've used them so I'm absolutely sure
 I've made alot of mistakes while trying to make them work.
 
+If you'd like to take a better look at how I handle UI, please take a look at this [repository](https://github.com/Valphai/Arkanoid_Natoniewski).
+
 On the final note I'd like to point out that I've not used cinemachine in this game. But I definitely could've done that just to get a virtual camera in front of the player
 when he's performing the dance moves.
 
