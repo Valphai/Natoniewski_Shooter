@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
+using UnityEditor;
 #endif
 
 namespace Chocolate4.Helpers
@@ -53,7 +54,15 @@ namespace Chocolate4.Helpers
         }
         private T OnCreateItem()
         {
-            T instance = MonoBehaviour.Instantiate(prefab);
+            T instance;
+            if (Application.isPlaying)
+            {
+                instance = MonoBehaviour.Instantiate(prefab);
+            }
+            else
+            {
+                instance = PrefabUtility.InstantiatePrefab(prefab) as T;
+            }
             SceneManager.MoveGameObjectToScene(
                 instance.gameObject, factoryScene
             );

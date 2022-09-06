@@ -123,7 +123,7 @@ public class EnemySpawningTool : EditorWindow
         instance.ChaseRange = chaseRangeProp.floatValue;
         instance.transform.position = (Vector3)point;
 
-        Undo.RegisterCreatedObjectUndo(instance, $"Spawned {instance}");
+        Undo.RegisterCreatedObjectUndo(instance.gameObject, $"Spawned {instance.gameObject}");
     }
     private void PreviewMeshAt(Vector3? point)
     {
@@ -133,6 +133,7 @@ public class EnemySpawningTool : EditorWindow
             // Forward pass. Shades all light in a single pass.
             m.SetPass(0);
         }
+        Handles.color = Color.cyan;
         Graphics.DrawMeshNow(mesh, p, Quaternion.identity);
         Handles.DrawWireDisc(
             p + Vector3.up, 
